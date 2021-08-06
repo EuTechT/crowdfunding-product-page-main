@@ -66,12 +66,21 @@ function closeModal() {
 
 btnSelectReward.forEach((btn, index) => {
     btn.addEventListener('click', () => {
-        openModal();
-        let pos = index + 1;
-        inputRadios[pos].checked = true;
-        selectPledge(inputRadios[pos], pos);
-    });
+    openModal();
+    let pos = index + 1;
+    inputRadios[pos].checked = true;
+    selectPledge(inputRadios[pos], pos);
+}); 
 });
+
+// btnSelectReward.forEach((btn, index) => {
+//     btn.addEventListener('click', () => {
+//     openModal();
+//     let pos = index + 1;
+//     inputRadios[pos].checked = true;
+//     selectPledge(inputRadios[pos], pos);
+// }); 
+// });
 
 inputRadios.forEach((input, index) => {
     input.addEventListener('click', () => {
@@ -101,15 +110,23 @@ btnContinue.forEach((btn, index) => {
         const totalBackers = window.document.querySelector('#total-backers');
         let numberTotalBackers = parseFloat(totalBackers.textContent.replace(',', '.'));
         let value = parseInt(pledgesAmounts[index].querySelector('input').value);
-
+    
         let totalValue =  (totalAmountRaised + (value/1000)).toFixed(3);
         let resultTotalBackers = (numberTotalBackers += (1/1000)).toFixed(3);
         totalRaised.textContent = totalValue.toString().replace('.', ',');
         totalBackers.textContent = resultTotalBackers.toString().replace('.', ',');
-
-       setTimeout(() => {
-           modalSuccess.classList.add('is-active');
-       }, 500);
+    
+        for(let i = 0; i < pledges.length; i++){
+            if(index == 0) {
+                execSetTimout();
+            } else if (index == i) {
+                if(pledges[i].classList.contains('bamboo')) {
+                    uptadeVacancies('.bamboo-stand-vacancies','.bamboo');
+                } else if (pledges[i].classList.contains('black-edition')) {
+                    uptadeVacancies('.black-edition-vacancies', '.black-edition');
+                }
+            }
+        }
     });
 });
 
@@ -117,3 +134,51 @@ btnGotIt.addEventListener('click', () => {
     closeModal();
     modalSuccess.classList.remove('is-active');
 });
+
+function uptadeVacancies(selector, parentElement) {
+    const remainingVacancies = window.document.querySelectorAll(selector);
+    const parentElements = window.document.querySelectorAll(parentElement);
+
+    for(let i = 0; i < remainingVacancies.length; i++) {
+        let numberRemainingVacancies = parseInt(remainingVacancies[i].textContent);
+        
+        if(numberRemainingVacancies <= 0) {
+            const btn = parentElements[i].querySelector('.btn');
+            parentElements[i].classList.add('disabled');
+            btn.classList.add('btn--disabled');
+            btn.innerHTML = "Out of Stock";
+        } else {
+            let result = numberRemainingVacancies -= 1;
+            remainingVacancies[i].textContent = result.toString();
+
+            execSetTimout();
+        }
+    }
+}
+
+// function uptadeVacancies(selector, parentElement) {
+//     const remainingVacancies = window.document.querySelectorAll(selector);
+//     const parentElements = window.document.querySelectorAll(parentElement);
+
+//     for(let i = 0; i < remainingVacancies.length; i++) {
+//         let numberRemainingVacancies = parseInt(remainingVacancies[i].textContent);
+        
+//         if(numberRemainingVacancies <= 0) {
+//             const btn = parentElements[i].querySelector('.btn');
+//             parentElements[i].classList.add('disabled');
+//             btn.classList.add('btn--disabled');
+//             btn.innerHTML = "Out of Stock";
+//         } else {
+//             let result = numberRemainingVacancies -= 1;
+//             remainingVacancies[i].textContent = result.toString();
+
+//             execSetTimout();
+//         }
+//     }
+// }
+
+function execSetTimout() {
+    setTimeout(() => {
+        modalSuccess.classList.add('is-active');
+    }, 500);
+}
