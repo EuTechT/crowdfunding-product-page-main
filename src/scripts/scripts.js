@@ -8,10 +8,15 @@ const btnSelectReward = window.document.querySelectorAll('.btn-select-reward');
 const inputRadios = window.document.querySelectorAll('.input input');
 const pledges = window.document.querySelectorAll('.pledge');
 const pledgesAmounts = window.document.querySelectorAll('.pledge-amount');
+const inputNumber = window.document.querySelectorAll('.amount__input input');
 const btnContinue = window.document.querySelectorAll('.btn-continue');
 const modalSuccess = window.document.querySelector('.modal-success');
 const btnGotIt = modalSuccess.querySelector('.btn');
+const projects = window.document.querySelectorAll('.project');
+const progressBar = window.document.querySelector('.progress-bar');
 
+
+// NAVIGATION MENU
 btnMenu.addEventListener('click', () => {
     btnMenu.classList.toggle('btn-menu--active');
     navigation.classList.toggle('navigation--show');
@@ -36,6 +41,8 @@ function closeNavigation(){
     overlay.classList.remove('is-active');
 }
 
+
+// BUTTON BOOKMARK
 btnBookmark.addEventListener('click', () => {
     btnBookmark.classList.toggle('btn-bookmark--active');
 
@@ -50,6 +57,7 @@ btnBackProject.addEventListener('click', () => {
     openModal();
 });
 
+// MODAL OPENING FUNCTION
 function openModal() {
     modalDefault.classList.add('is-active');
 
@@ -60,30 +68,24 @@ function openModal() {
     });
 }
 
+// MODAL CLOSING FUNCTION
 function closeModal() {
     modalDefault.classList.remove('is-active');
 }
 
+
+// SELECT REWARD
 btnSelectReward.forEach((btn, index) => {
     btn.addEventListener('click', () => {
-    openModal();
-    let pos = index + 1;
-    inputRadios[pos].checked = true;
-    selectPledge(inputRadios[pos], pos);
-}); 
+        openModal();
+        let pos = index + 1;
+        inputRadios[pos].checked = true;
+        selectPledge(inputRadios[pos], pos);
+    }); 
 });
 
-// btnSelectReward.forEach((btn, index) => {
-//     btn.addEventListener('click', () => {
-//     openModal();
-//     let pos = index + 1;
-//     inputRadios[pos].checked = true;
-//     selectPledge(inputRadios[pos], pos);
-// }); 
-// });
-
 inputRadios.forEach((input, index) => {
-    input.addEventListener('click', () => {
+    input.addEventListener('change', () => {
         selectPledge(input, index);
     });
 });
@@ -103,39 +105,85 @@ function selectPledge(input, pos){
     }
 }
 
+
+// AMOUNT INPUT
+inputNumber.forEach((input) => {
+    input.addEventListener('focus', () => {
+        input.parentElement.classList.add('amount__input--focused');
+    });
+});
+
+inputNumber.forEach((input) => {
+    input.addEventListener('blur', () => {
+        input.parentElement.classList.remove('amount__input--focused');
+    });
+});
+
+
+// CONTINUE BUTTON
 btnContinue.forEach((btn, index) => {
     btn.addEventListener('click', () => {
-        const totalRaised = window.document.querySelector('#total-raised');
-        let totalAmountRaised = parseFloat(totalRaised.textContent.replace(',', '.'));
-        const totalBackers = window.document.querySelector('#total-backers');
-        let numberTotalBackers = parseFloat(totalBackers.textContent.replace(',', '.'));
-        let value = parseInt(pledgesAmounts[index].querySelector('input').value);
-    
-        let totalValue =  (totalAmountRaised + (value/1000)).toFixed(3);
-        let resultTotalBackers = (numberTotalBackers += (1/1000)).toFixed(3);
-        totalRaised.textContent = totalValue.toString().replace('.', ',');
-        totalBackers.textContent = resultTotalBackers.toString().replace('.', ',');
+        const elements = getElements();
+        let totalRaised = parseFloat(elements.totalRaised.textContent.replace(',', '.'));
+        let totalBackers = parseFloat(elements.totalBackers.textContent.replace(',', '.'));
+        let amount = parseInt(pledgesAmounts[index].querySelector('input').value);
+        
+        let amountValue = totalRaised + (amount/1000);
+        let numberTotalBackers = totalBackers + (1/1000);
+
+        let resultAmountValue =  amountValue.toFixed(3);
+        let resultTotalBackers = numberTotalBackers.toFixed(3);
+
+        elements.totalRaised.textContent = resultAmountValue.toString().replace('.', ',');
+        elements.totalBackers.textContent = resultTotalBackers.toString().replace('.', ',');
+
+        updateProgressBar(amount);
     
         for(let i = 0; i < pledges.length; i++){
             if(index == 0) {
                 execSetTimout();
             } else if (index == i) {
                 if(pledges[i].classList.contains('bamboo')) {
-                    uptadeVacancies('.bamboo-stand-vacancies','.bamboo');
+                    updateVacancies('.bamboo-stand-vacancies','.bamboo');
                 } else if (pledges[i].classList.contains('black-edition')) {
-                    uptadeVacancies('.black-edition-vacancies', '.black-edition');
+                    updateVacancies('.black-edition-vacancies', '.black-edition');
                 }
             }
         }
     });
 });
 
+function getElements() {
+    const elements = {};
+    elements.totalRaised = window.document.querySelector('#total-raised');
+    elements.totalBackers = window.document.querySelector('#total-backers');
+
+    return elements;
+}
+
+
+// PROGRESS BAR
+function updateProgressBar(amount) {
+    let widthProgressBar = progressBar.style.width;
+    let width = parseFloat(widthProgressBar.split('').slice(0, -1).join(''));
+    let percentage = (amount*100) / 100000;
+
+    if((width + percentage) > 100) {
+        progressBar.style.width = "100%";
+    } else {
+        progressBar.style.width = (width + percentage) + "%";
+    }
+}
+
+// CLOSE MODAL SUCCESS
 btnGotIt.addEventListener('click', () => {
     closeModal();
     modalSuccess.classList.remove('is-active');
 });
 
-function uptadeVacancies(selector, parentElement) {
+
+// UPDATED VACANCIES
+function updateVacancies(selector, parentElement) {
     const remainingVacancies = window.document.querySelectorAll(selector);
     const parentElements = window.document.querySelectorAll(parentElement);
 
@@ -156,29 +204,8 @@ function uptadeVacancies(selector, parentElement) {
     }
 }
 
-// function uptadeVacancies(selector, parentElement) {
-//     const remainingVacancies = window.document.querySelectorAll(selector);
-//     const parentElements = window.document.querySelectorAll(parentElement);
-
-//     for(let i = 0; i < remainingVacancies.length; i++) {
-//         let numberRemainingVacancies = parseInt(remainingVacancies[i].textContent);
-        
-//         if(numberRemainingVacancies <= 0) {
-//             const btn = parentElements[i].querySelector('.btn');
-//             parentElements[i].classList.add('disabled');
-//             btn.classList.add('btn--disabled');
-//             btn.innerHTML = "Out of Stock";
-//         } else {
-//             let result = numberRemainingVacancies -= 1;
-//             remainingVacancies[i].textContent = result.toString();
-
-//             execSetTimout();
-//         }
-//     }
-// }
-
 function execSetTimout() {
     setTimeout(() => {
         modalSuccess.classList.add('is-active');
-    }, 500);
+    }, 100);
 }
