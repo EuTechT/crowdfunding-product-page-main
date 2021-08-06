@@ -82,6 +82,7 @@ btnSelectReward.forEach((btn, index) => {
         inputRadios[pos].checked = true;
         selectPledge(inputRadios[pos], pos);
     }); 
+
 });
 
 inputRadios.forEach((input, index) => {
@@ -123,21 +124,23 @@ inputNumber.forEach((input) => {
 // CONTINUE BUTTON
 btnContinue.forEach((btn, index) => {
     btn.addEventListener('click', () => {
-        const elements = getElements();
-        let totalRaised = parseFloat(elements.totalRaised.textContent.replace(',', '.'));
-        let totalBackers = parseFloat(elements.totalBackers.textContent.replace(',', '.'));
-        let amount = parseInt(pledgesAmounts[index].querySelector('input').value);
-        
-        let amountValue = totalRaised + (amount/1000);
-        let numberTotalBackers = totalBackers + (1/1000);
-
-        let resultAmountValue =  amountValue.toFixed(3);
-        let resultTotalBackers = numberTotalBackers.toFixed(3);
-
-        elements.totalRaised.textContent = resultAmountValue.toString().replace('.', ',');
-        elements.totalBackers.textContent = resultTotalBackers.toString().replace('.', ',');
-
-        updateProgressBar(amount);
+        if(!btn.classList.contains('btn--disabled')) {
+            const elements = getElements();
+            let totalRaised = parseFloat(elements.totalRaised.textContent.replace(',', '.'));
+            let totalBackers = parseFloat(elements.totalBackers.textContent.replace(',', '.'));
+            let amount = parseInt(pledgesAmounts[index].querySelector('input').value);
+            
+            let amountValue = totalRaised + (amount/1000);
+            let numberTotalBackers = totalBackers + (1/1000);
+    
+            let resultAmountValue =  amountValue.toFixed(3);
+            let resultTotalBackers = numberTotalBackers.toFixed(3);
+    
+            elements.totalRaised.textContent = resultAmountValue.toString().replace('.', ',');
+            elements.totalBackers.textContent = resultTotalBackers.toString().replace('.', ',');
+    
+            updateProgressBar(amount);
+        }
     
         for(let i = 0; i < pledges.length; i++){
             if(index == 0) {
@@ -190,7 +193,8 @@ function updateVacancies(selector, parentElement) {
     for(let i = 0; i < remainingVacancies.length; i++) {
         let numberRemainingVacancies = parseInt(remainingVacancies[i].textContent);
         
-        if(numberRemainingVacancies <= 0) {
+        if(numberRemainingVacancies <= 1) {
+            remainingVacancies[i].textContent = 0;
             const btn = parentElements[i].querySelector('.btn');
             parentElements[i].classList.add('disabled');
             btn.classList.add('btn--disabled');
