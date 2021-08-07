@@ -1,6 +1,6 @@
 :root {
     --max-width-1: 1440px;
-    --max-width-2: 800px;
+    --max-width-2: 750px;
 
     --primary-color-1: hsl(176, 50%, 47%);
     --primary-color-2: hsl(176, 72%, 28%);
@@ -163,7 +163,7 @@ a {
 
 @media (min-width: 1025px) {
     .header {
-        height: 500px;
+        height: 410px;
         background-image: url("../images/image-hero-desktop.jpg");
     }
 

@@ -77,10 +77,12 @@ function closeModal() {
 // SELECT REWARD
 btnSelectReward.forEach((btn, index) => {
     btn.addEventListener('click', () => {
-        openModal();
-        let pos = index + 1;
-        inputRadios[pos].checked = true;
-        selectPledge(inputRadios[pos], pos);
+        if(!projects[index].classList.contains('disabled')){
+            openModal();
+            let pos = index + 1;
+            inputRadios[pos].checked = true;
+            selectPledge(inputRadios[pos], pos);
+        }
     }); 
 
 });
@@ -92,20 +94,25 @@ inputRadios.forEach((input, index) => {
 });
 
 function selectPledge(input, pos){
-    if(input.checked){
-        pledges[pos].classList.add('pledge--selected');
-        pledgesAmounts[pos].classList.add('pledge-amount--show');
+    if(!pledges[pos].classList.contains('disabled')){
+        if(input.checked) {
+            pledges[pos].querySelector('.input input').removeAttribute('disabled');
+            pledges[pos].classList.add('pledge--selected');
+            pledgesAmounts[pos].classList.add('pledge-amount--show');
 
-        for(let i = 0; i < pledges.length; i++){
-            if(i != pos){
-                inputRadios[i].checked = false;
-                pledges[i].classList.remove('pledge--selected');
-                pledgesAmounts[i].classList.remove('pledge-amount--show');
+            for(let i = 0; i < pledges.length; i++){
+                if(i != pos){
+                    inputRadios[i].checked = false;
+                    pledges[i].classList.remove('pledge--selected');
+                    pledgesAmounts[i].classList.remove('pledge-amount--show');
+                }
             }
-        }
+        } 
+    } else {
+        pledges[pos].querySelector('.input input').setAttribute('disabled', true);
+        input.checked = false;
     }
 }
-
 
 // AMOUNT INPUT
 inputNumber.forEach((input) => {
