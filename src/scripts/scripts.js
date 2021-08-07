@@ -157,6 +157,8 @@ btnContinue.forEach((btn, index) => {
                     updateVacancies('.bamboo-stand-vacancies','.bamboo');
                 } else if (pledges[i].classList.contains('black-edition')) {
                     updateVacancies('.black-edition-vacancies', '.black-edition');
+                } else if (pledges[i].classList.contains('mahogany')) {
+                    updateVacancies('.mahogany-vacancies', '.mahogany');
                 }
             }
         }
@@ -206,6 +208,7 @@ function updateVacancies(selector, parentElement) {
             parentElements[i].classList.add('disabled');
             btn.classList.add('btn--disabled');
             btn.innerHTML = "Out of Stock";
+            execSetTimout();
         } else {
             let result = numberRemainingVacancies -= 1;
             remainingVacancies[i].textContent = result.toString();
